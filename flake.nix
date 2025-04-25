@@ -25,5 +25,10 @@
         # Includes your actual user config
         imports = [ ./home/${username}.nix ];
       };
+
+      apps.${system}.update = {
+        type = "app";
+        program = "${./update.sh}";
+      };
     };
 }
