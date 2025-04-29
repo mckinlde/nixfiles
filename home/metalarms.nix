@@ -3,25 +3,32 @@
 {
   home.stateVersion = "23.11"; # adjust to your current NixOS version
 
-  # CLI tools for Electric Era challenge
-  home.packages = [
-    pkgs.git
-    pkgs.gcc
-    pkgs.cmake
-    pkgs.gnumake
-    pkgs.gdb
-    pkgs.valgrind
-    pkgs.neovim
-    pkgs.htop
-    pkgs.ripgrep
-    pkgs.fd
-    pkgs.curl
-    pkgs.unzip
-    pkgs.zip
-    pkgs.jq
-    pkgs.okular
-    pkgs.vscodium
-  ];
+  let
+    devTools = with pkgs; [
+      git
+      gcc
+      cmake
+      gnumake
+      gdb
+      valgrind
+      neovim
+      ripgrep
+      fd
+      curl
+      unzip
+      zip
+      jq
+    ];
+
+    desktopApps = with pkgs; [
+      kdePackages.okular
+      vscodium
+      htop
+    ];
+  in {
+    home.packages = devTools ++ desktopApps;
+  }
+
 
 
   programs.git = {
