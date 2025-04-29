@@ -1,35 +1,32 @@
 { config, pkgs, ... }:
 
+let
+  devTools = with pkgs; [
+    git
+    gcc
+    cmake
+    gnumake
+    gdb
+    valgrind
+    neovim
+    ripgrep
+    fd
+    curl
+    unzip
+    zip
+    jq
+  ];
+
+  desktopApps = with pkgs; [
+    kdePackages.okular
+    vscodium
+    htop
+  ];
+in
 {
-  home.stateVersion = "23.11"; # adjust to your current NixOS version
+  home.stateVersion = "23.11";
 
-  let
-    devTools = with pkgs; [
-      git
-      gcc
-      cmake
-      gnumake
-      gdb
-      valgrind
-      neovim
-      ripgrep
-      fd
-      curl
-      unzip
-      zip
-      jq
-    ];
-
-    desktopApps = with pkgs; [
-      kdePackages.okular
-      vscodium
-      htop
-    ];
-  in {
-    home.packages = devTools ++ desktopApps;
-  }
-
-
+  home.packages = devTools ++ desktopApps;
 
   programs.git = {
     enable = true;
@@ -45,7 +42,6 @@
       extensions = with pkgs.vscode-extensions; [
         ms-python.python
         vscodevim.vim
-        # add more extensions as needed
       ];
 
       userSettings = {
@@ -55,13 +51,8 @@
     };
   };
 
-
-
-  # Optional shell setup
   programs.bash.enable = true;
-  # programs.zsh.enable = true;
 
-  # Enable basic direnv support (optional, useful for dev)
   programs.direnv.enable = true;
   programs.direnv.nix-direnv.enable = true;
 }
