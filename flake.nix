@@ -12,19 +12,15 @@
       system = "x86_64-linux";
       username = "metalarms";
     in {
-      homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
+      homeConfigurations.metalarms = home-manager.lib.homeManagerConfiguration {
         inherit system;
-
-        pkgs = import nixpkgs { inherit system; };
-
-        home.username = username;
-        home.homeDirectory = "/home/${username}";
-
-        programs.home-manager.enable = true;
-
-        # Includes your actual user config
-        imports = [ ./home/${username}.nix ];
+        pkgs = nixpkgs.legacyPackages.${system};
+        modules = [ ./home/metalarms.nix ];
+        # optional, if you're not setting it in home.nix:
+        # username = "metalarms";
+        # homeDirectory = "/home/metalarms";
       };
+
 
       apps.${system}.update = {
         type = "app";
