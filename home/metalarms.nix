@@ -18,7 +18,7 @@ let
   ];
 
   desktopApps = with pkgs; [
-    kdePackages.okular
+    masterpdfeditor
     vscodium
     htop
   ];
