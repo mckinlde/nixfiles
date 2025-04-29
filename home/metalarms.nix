@@ -19,6 +19,8 @@
     unzip
     zip
     jq
+    okular # PDF annotation
+    vscodium # vsCode without telemetry; open with >> codium .
   ];
 
   programs.git = {
@@ -26,6 +28,22 @@
     userName = "Douglas McKinley";
     userEmail = "your@email.com"; # update this
   };
+
+  programs.vscode = {
+    enable = true;
+    package = pkgs.vscodium;
+    extensions = with pkgs.vscode-extensions; [
+      vscodevim.vim
+      ms-python.python
+      # Add other desired extensions here
+    ];
+    userSettings = {
+      "editor.fontSize" = 14;
+      "editor.tabSize" = 2;
+      # Add other settings as needed
+    };
+  };
+
 
   # Optional shell setup
   programs.bash.enable = true;
