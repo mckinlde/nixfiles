@@ -8,7 +8,7 @@
     pkgs.git
     pkgs.gcc
     pkgs.cmake
-    pkgs.make
+    pkgs.gnumake
     pkgs.gdb
     pkgs.valgrind
     pkgs.neovim
