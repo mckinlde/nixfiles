@@ -4,24 +4,25 @@
   home.stateVersion = "23.11"; # adjust to your current NixOS version
 
   # CLI tools for Electric Era challenge
-  home.packages = with pkgs; [
-    git
-    gcc
-    cmake
-    make
-    gdb
-    valgrind
-    neovim
-    htop
-    ripgrep
-    fd
-    curl
-    unzip
-    zip
-    jq
-    okular # PDF annotation
-    vscodium # vsCode without telemetry; open with >> codium .
+  home.packages = [
+    pkgs.git
+    pkgs.gcc
+    pkgs.cmake
+    pkgs.make
+    pkgs.gdb
+    pkgs.valgrind
+    pkgs.neovim
+    pkgs.htop
+    pkgs.ripgrep
+    pkgs.fd
+    pkgs.curl
+    pkgs.unzip
+    pkgs.zip
+    pkgs.jq
+    pkgs.okular
+    pkgs.vscodium
   ];
+
 
   programs.git = {
     enable = true;
@@ -32,17 +33,21 @@
   programs.vscode = {
     enable = true;
     package = pkgs.vscodium;
-    extensions = with pkgs.vscode-extensions; [
-      vscodevim.vim
-      ms-python.python
-      # Add other desired extensions here
-    ];
-    userSettings = {
-      "editor.fontSize" = 14;
-      "editor.tabSize" = 2;
-      # Add other settings as needed
+
+    profiles.default = {
+      extensions = with pkgs.vscode-extensions; [
+        ms-python.python
+        vscodevim.vim
+        # add more extensions as needed
+      ];
+
+      userSettings = {
+        "editor.fontSize" = 14;
+        "editor.tabSize" = 2;
+      };
     };
   };
+
 
 
   # Optional shell setup
