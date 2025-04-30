@@ -1,23 +1,17 @@
 { config, pkgs, ... }:
 
 let
-  devTools = with pkgs; [
-    git
-    gcc
-    cmake
-    gnumake
-    gdb
-    valgrind
-    neovim
-    ripgrep
-    fd
-    curl
-    unzip
-    zip
-    jq
+  # Enable unfree packages
+  myPkgs = import pkgs.path {
+    inherit (pkgs) system;
+    config.allowUnfree = true;
+  };
+
+  devTools = with myPkgs; [
+    git gcc cmake gnumake gdb valgrind neovim ripgrep fd curl unzip zip jq
   ];
 
-  desktopApps = with pkgs; [
+  desktopApps = with myPkgs; [
     masterpdfeditor
     vscodium
     htop
@@ -36,10 +30,10 @@ in
 
   programs.vscode = {
     enable = true;
-    package = pkgs.vscodium;
+    package = myPkgs.vscodium;
 
     profiles.default = {
-      extensions = with pkgs.vscode-extensions; [
+      extensions = with myPkgs.vscode-extensions; [
         ms-python.python
         vscodevim.vim
       ];
