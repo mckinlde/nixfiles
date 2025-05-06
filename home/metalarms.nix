@@ -1,7 +1,6 @@
 { config, pkgs, ... }:
 
 let
-  # Allow unfree packages in user environment
   myPkgs = import pkgs.path {
     inherit (pkgs) system;
     config.allowUnfree = true;
@@ -26,7 +25,7 @@ in
   programs.git = {
     enable = true;
     userName = "Douglas McKinley";
-    userEmail = "your@email.com"; # replace
+    userEmail = "your@email.com"; # replace this
   };
 
   programs.vscode = {
@@ -36,12 +35,14 @@ in
     profiles.default = {
       extensions = with myPkgs.vscode-extensions; [
         ms-python.python
-        vscodevim.vim
+        # vscodevim.vim  # ⛔️ Removed to disable Vim mode
       ];
 
       userSettings = {
         "editor.fontSize" = 14;
         "editor.tabSize" = 2;
+        "git.enabled" = true;
+        "git.path" = "git";
       };
     };
   };
