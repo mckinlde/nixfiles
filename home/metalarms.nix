@@ -22,7 +22,6 @@ in
 
   home.packages = devTools ++ desktopApps ++ [ myPkgs.home-manager ];
 
-
   programs.git = {
     enable = true;
     userName = "Douglas McKinley";
