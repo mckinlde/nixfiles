@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  # Enable unfree packages
+  # Allow unfree packages in user environment
   myPkgs = import pkgs.path {
     inherit (pkgs) system;
     config.allowUnfree = true;
@@ -15,6 +15,7 @@ let
     masterpdfeditor
     vscodium
     htop
+    tailscale
   ];
 in
 {
@@ -25,7 +26,7 @@ in
   programs.git = {
     enable = true;
     userName = "Douglas McKinley";
-    userEmail = "your@email.com"; # update this
+    userEmail = "your@email.com"; # replace
   };
 
   programs.vscode = {

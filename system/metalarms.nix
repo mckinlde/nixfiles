@@ -31,6 +31,16 @@
   # Declare the user's primary group
   users.groups.metalarms = {};
 
+
+  # Enable the GNOME display manager and desktop
+  # services.xserver.enable = true;
+  # services.xserver.desktopManager.gnome.enable = true;
+  # services.xserver.displayManager.gdm.enable = true;
+  # services.xserver.displayManager.defaultSession = "gnome";
+
+  # Needed for graphical sessions
+  hardware.opengl.enable = true;
+
   # Enable the Tailscale service
   services.tailscale.enable = true;
 

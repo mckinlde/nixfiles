@@ -1,5 +1,5 @@
 {
-  description = "Metalarms's NixOS + Home Manager Config";
+  description = "Metalarms's Home Manager config";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -11,20 +11,8 @@
     let
       system = "x86_64-linux";
     in {
-      nixosConfigurations.metalarms = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          ./system/metalarms.nix
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.metalarms = import ./home/metalarms.nix;
-          }
-        ];
-      };
-
       homeConfigurations.metalarms = home-manager.lib.homeManagerConfiguration {
+        pkgs = nixpkgs.legacyPackages.${system};
         modules = [
           ./home/metalarms.nix
           {
@@ -33,12 +21,6 @@
             home.stateVersion = "23.11";
           }
         ];
-        pkgs = nixpkgs.legacyPackages.${system};
-      };
-
-      apps.${system}.update = {
-        type = "app";
-        program = "${./update.sh}";
       };
     };
 }
