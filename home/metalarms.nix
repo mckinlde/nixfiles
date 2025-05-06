@@ -20,7 +20,8 @@ in
 {
   home.stateVersion = "23.11";
 
-  home.packages = devTools ++ desktopApps;
+  home.packages = devTools ++ desktopApps ++ [ myPkgs.home-manager ];
+
 
   programs.git = {
     enable = true;
