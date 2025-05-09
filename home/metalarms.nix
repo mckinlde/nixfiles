@@ -11,6 +11,7 @@ let
   ];
 
   desktopApps = with myPkgs; [
+    google-chrome
     masterpdfeditor
     vscodium
     htop
