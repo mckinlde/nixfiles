@@ -10,9 +10,14 @@
   outputs = { nixpkgs, home-manager, ... }:
     let
       system = "x86_64-linux";
+
+      pkgs = import nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+      };
     in {
       homeConfigurations.metalarms = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.${system};
+        inherit pkgs;
         modules = [
           ./home/metalarms.nix
           {

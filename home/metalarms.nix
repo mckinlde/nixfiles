@@ -1,16 +1,11 @@
 { config, pkgs, ... }:
 
 let
-  myPkgs = import pkgs.path {
-    inherit (pkgs) system;
-    config.allowUnfree = true;
-  };
-
-  devTools = with myPkgs; [
+  devTools = with pkgs; [
     git gcc cmake gnumake gdb valgrind neovim ripgrep fd curl unzip zip jq
   ];
 
-  desktopApps = with myPkgs; [
+  desktopApps = with pkgs; [
     google-chrome
     masterpdfeditor
     vscodium
@@ -19,24 +14,22 @@ let
   ];
 in
 {
-  home.stateVersion = "23.11";
-
-  home.packages = devTools ++ desktopApps ++ [ myPkgs.home-manager ];
+  home.packages = devTools ++ desktopApps ++ [ pkgs.home-manager ];
 
   programs.git = {
     enable = true;
     userName = "Douglas McKinley";
-    userEmail = "your@email.com"; # replace this
+    userEmail = "douglas.e.mckinley@gmail.com"; # 🔁 Replace this
   };
 
   programs.vscode = {
     enable = true;
-    package = myPkgs.vscodium;
+    package = pkgs.vscodium;
 
     profiles.default = {
-      extensions = with myPkgs.vscode-extensions; [
+      extensions = with pkgs.vscode-extensions; [
         ms-python.python
-        # vscodevim.vim  # ⛔️ Removed to disable Vim mode
+        # vscodevim.vim  # Uncomment if you want Vim keybindings
       ];
 
       userSettings = {
