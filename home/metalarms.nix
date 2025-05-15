@@ -8,10 +8,11 @@ let
   desktopApps = with pkgs; [
     google-chrome
     masterpdfeditor
-    pgadmin4
+    pgadmin4-desktopmode
     vscodium
     htop
     tailscale
+    vlc
   ];
 in
 {
