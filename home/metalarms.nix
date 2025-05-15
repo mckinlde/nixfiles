@@ -8,7 +8,7 @@ let
   desktopApps = with pkgs; [
     google-chrome
     masterpdfeditor
-    pgadmin4-desktopmode
+    pgadmin4
     vscodium
     htop
     tailscale
