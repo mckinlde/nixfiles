@@ -15,6 +15,20 @@
         inherit system;
         config.allowUnfree = true;
       };
+
+      # Define your desktop apps here (same list as in metalarms.nix)
+      desktopApps = [
+        pkgs.google-chrome
+        pkgs.masterpdfeditor
+        pkgs.pgadmin4
+        pkgs.vscodium
+        pkgs.htop
+        pkgs.tailscale
+        pkgs.vlc
+      ];
+
+      desktopAppPaths = builtins.map (app: app.outPath) desktopApps;
+      
     in {
       homeConfigurations.metalarms = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
@@ -26,6 +40,12 @@
             home.stateVersion = "23.11";
           }
         ];
+      };
+
+      # Expose desktop app paths for shell scripts
+      desktopApps = {
+        inherit desktopApps;
+        inherit desktopAppPaths;
       };
     };
 }
