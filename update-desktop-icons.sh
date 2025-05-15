@@ -1,42 +1,120 @@
 #!/usr/bin/env bash
-# chmod +x update-desktop-icons.sh
 set -euo pipefail
+
+desktop_apps=(
+  google-chrome
+  masterpdfeditor
+  pgadmin4
+  vscodium
+  htop
+  tailscale
+  vlc
+)
 
 dest_dir="$HOME/.local/share/applications"
 mkdir -p "$dest_dir"
 
 echo "Updating GNOME desktop icons for your desktopApps..."
 
-# Get JSON array of store paths from flake output
-if ! command -v jq &>/dev/null; then
-  echo "❌ 'jq' is required but not installed. Please install it."
-  exit 1
-fi
+# Define custom .desktop files for apps that lack them in nix store
+declare -A custom_desktops
 
-# Evaluate the flake output to get desktop app store paths
-mapfile -t store_paths < <(
-  nix eval --json ~/nixfiles#desktopApps.desktopAppPaths | jq -r '.[]'
-)
+custom_desktops[pgadmin4]='
+[Desktop Entry]
+Version=1.0
+Name=pgAdmin 4
+Comment=PostgreSQL Management Tool
+Exec=pgadmin4
+Icon=pgadmin4
+Terminal=false
+Type=Application
+Categories=Development;Database;
+'
 
-if [[ ${#store_paths[@]} -eq 0 ]]; then
-  echo "⚠️ No desktop app store paths found from flake output. Exiting."
-  exit 1
-fi
+custom_desktops[vlc]='
+[Desktop Entry]
+Version=1.0
+Name=VLC media player
+Comment=Play your media files
+Exec=vlc %U
+Icon=vlc
+Terminal=false
+Type=Application
+Categories=AudioVideo;Player;Recorder;
+'
 
-for store_path in "${store_paths[@]}"; do
-  desktop_files=("$store_path/share/applications/"*.desktop)
+custom_desktops[tailscale]='
+[Desktop Entry]
+Version=1.0
+Name=Tailscale
+Comment=Secure VPN service
+Exec=tailscale up
+Icon=tailscale
+Terminal=false
+Type=Application
+Categories=Network;
+'
 
-  if [[ ! -e "${desktop_files[0]}" ]]; then
-    echo "⚠️ No .desktop files found in $store_path/share/applications/"
+custom_desktops[masterpdfeditor]='
+[Desktop Entry]
+Version=1.0
+Name=Master PDF Editor
+Comment=Edit PDF documents
+Exec=masterpdfeditor
+Icon=masterpdfeditor
+Terminal=false
+Type=Application
+Categories=Office;Graphics;
+'
+
+custom_desktops[vscodium]='
+[Desktop Entry]
+Version=1.0
+Name=VSCodium
+Comment=Open-source VS Code editor
+Exec=vscodium %F
+Icon=vscodium
+Terminal=false
+Type=Application
+Categories=Development;IDE;
+'
+
+for app in "${desktop_apps[@]}"; do
+  store_path=$(nix eval --raw "./#desktopAppPaths.${app}" 2>/dev/null || true)
+
+  if [[ -z "$store_path" ]]; then
+    echo "⚠️ Could not find nix store path for '$app'. Skipping."
+    continue
+  fi
+  
+  if [[ -z "$store_path" ]]; then
+    echo "⚠️ Could not find nix store path for '$app'. Skipping."
     continue
   fi
 
-  for desktop_file in "${desktop_files[@]}"; do
-    filename=$(basename "$desktop_file")
-    dest_file="$dest_dir/$filename"
-    cp -f "$desktop_file" "$dest_file"
-    echo "✔️ Installed $filename from $store_path"
-  done
+  desktop_files=("$store_path/share/applications/"*.desktop)
+  found_any=false
+  
+  if [[ ${#desktop_files[@]} -gt 0 && -e "${desktop_files[0]}" ]]; then
+    for desktop_file in "${desktop_files[@]}"; do
+      filename=$(basename "$desktop_file")
+      cp -f "$desktop_file" "$dest_dir/$filename"
+      echo "✔️ Installed $filename for $app"
+      found_any=true
+    done
+  fi
+
+  if ! $found_any; then
+    # Check if we have a custom desktop entry for this app
+    if [[ -n "${custom_desktops[$app]:-}" ]]; then
+      desktop_file="$dest_dir/$app.desktop"
+      echo "${custom_desktops[$app]}" > "$desktop_file"
+      echo "✨ Created custom desktop entry for $app"
+      found_any=true
+    else
+      echo "⚠️ No .desktop files found and no custom entry for '$app'. Skipping."
+    fi
+  fi
 done
 
 echo "✅ Done updating desktop icons."
